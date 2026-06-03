@@ -114,8 +114,7 @@
                         <button class="btn-filter" onclick="app.filter('Завершено', this)">Виконано</button>
                     </div>
                     <div style="display:flex; gap:8px;">
-                        <button onclick="app.exportFile('docx')" class="btn-refresh" id="uiBtnExportDocx" style="background:#14532d;"></button>
-                        <button onclick="app.exportFile('pdf')" class="btn-refresh" id="uiBtnExportPdf" style="background:#7c3aed;">📄 Експорт PDF</button>
+                        <button onclick="app.openExportModal()" class="btn-refresh" style="background:rgba(0,229,160,0.15); border-color:var(--accent); color:var(--accent);">📁 Документи</button>
                         <button onclick="app.load()" class="btn-refresh" id="uiBtnRefresh"></button>
                     </div>
                 </div>
@@ -128,6 +127,7 @@
                                 <th id="thName"></th>
                                 <th id="thLoc"></th>
                                 <th style="text-align: center;" id="thStatus"></th>
+                                <th style="text-align: center; width:40px;">QR</th>
                                 <th style="text-align: center; width:40px;" id="thActions"></th>
                             </tr>
                         </thead>
@@ -314,6 +314,40 @@
                     <button onclick="app.saveUser()" class="btn-submit" style="width:auto; padding:10px 30px;">Зберегти</button>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- Toast container -->
+    <div id="toastContainer"></div>
+
+    <!-- Export modal -->
+    <div id="exportModal" class="export-modal-overlay" style="display:none;">
+        <div class="export-modal">
+            <h3>📁 Експорт документу</h3>
+            <div class="export-options">
+                <button class="export-btn" onclick="app.exportFile('docx'); app.closeExportModal()">
+                    <span class="export-icon">📝</span>
+                    <div class="export-label">Word</div>
+                    <div class="export-sub">.docx формат</div>
+                </button>
+                <button class="export-btn" onclick="app.exportFile('pdf'); app.closeExportModal()">
+                    <span class="export-icon">📄</span>
+                    <div class="export-label">PDF</div>
+                    <div class="export-sub">.pdf формат</div>
+                </button>
+            </div>
+            <button class="export-close" onclick="app.closeExportModal()">✕ Скасувати</button>
+        </div>
+    </div>
+
+    <!-- QR modal -->
+    <div id="qrModal" class="modal-overlay" style="display:none;">
+        <div class="qr-card">
+            <h3>QR-КОД ЗАХОДУ</h3>
+            <img id="qrImage" src="" alt="QR" width="200" height="200">
+            <div class="qr-event-name" id="qrEventName"></div>
+            <div class="qr-attendance">👥 Зареєстровано: <span id="qrAttendance">0</span></div>
+            <button onclick="app.closeQRModal()" class="export-close" style="margin-top:1rem;">✕ Закрити</button>
         </div>
     </div>
 

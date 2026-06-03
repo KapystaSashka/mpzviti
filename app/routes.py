@@ -2,7 +2,7 @@ from flask import Blueprint, jsonify, request, render_template, send_file
 from functools import wraps
 
 from app.services import (EventService, AuthService, AnalyticsService,
-                          AIService, ReportService, AuditService, UserService, has_permission)
+                          AIService, ReportService, AuditService, UserService, QRService, has_permission)
 from app.report_structure import ERROR_MESSAGES
 
 api_bp = Blueprint('api', __name__)
@@ -195,6 +195,36 @@ def delete_user(user_id):
     if not ok:
         return jsonify({"error": "Користувача не знайдено"}), 404
     return jsonify({"ok": True}), 200
+
+
+
+# --- QR-код відвідування ---
+
+@api_bp.route('/events/<int:event_id>/qr', methods=['GET'])
+@permission_required('events:read')
+def get_event_qr(event_id):
+    base_url = request.host_url.rstrip('/')
+    result = QRService.generate_qr(event_id, base_url)
+    return jsonify(result), 200
+
+
+@api_bp.route('/attend/<int:event_id>', methods=['GET'])
+def attend_page(event_id):
+    """Публічна сторінка реєстрації відвідування (без авторизації)."""
+    ev = EventService.get_all_events()
+    event = next((e for e in ev if e['id'] == event_id), None)
+    if not event:
+        return "Захід не знайдено", 404
+    return render_template('attend.html', event=event)
+
+
+@api_bp.route('/attend/<int:event_id>', methods=['POST'])
+def register_attendance(event_id):
+    """Фіксує відвідування через QR."""
+    result, error = QRService.register_attendance(event_id)
+    if error:
+        return jsonify({"error": error}), 400
+    return jsonify({"ok": True, "attendance": result["attendance"]}), 200
 
 
 

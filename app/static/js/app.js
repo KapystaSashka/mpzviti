@@ -441,12 +441,15 @@ class MPZApplication {
                 ? `<button class="btn-delete" onclick="app.deleteEvent(${e.id})" title="Видалити захід">✕</button>`
                 : '';
 
+            const qrBtn = `<button class="btn-refresh" style="padding:3px 8px;font-size:0.65rem;" onclick="app.showQR(${e.id}, '${e.title.replace(/'/g,'').substring(0,30)}', ${e.attendance || 0})" title="QR-код">QR</button>`;
+
             tbody.innerHTML += `
                 <tr>
                     <td class="date-col">${e.date}</td>
                     <td class="title-col">${e.title}${satHtml ? '<br>' + satHtml : ''}</td>
-                    <td><div>${e.location || '—'}</div><div style="font-size:0.75rem; color:#64748b;">${e.responsible || '—'}</div></td>
+                    <td><div>${e.location || '—'}</div><div style="font-size:0.75rem; color:var(--text-muted);">${e.responsible || '—'}</div></td>
                     <td style="text-align:center;">${statusCell}</td>
+                    <td style="text-align:center;">${qrBtn}</td>
                     <td style="text-align:center; width:40px;">${deleteBtn}</td>
                 </tr>`;
         });
@@ -471,9 +474,10 @@ class MPZApplication {
                 const activeFilter = document.querySelector('.btn-filter.active');
                 const status = activeFilter ? activeFilter.textContent.trim() : 'Усі';
                 this.renderTable(status === 'В процесі' ? 'У процесі' : status);
+                this.toast('Статус оновлено', 'success');
             }
         } catch (err) {
-            console.error('Помилка зміни статусу:', err);
+            this.toast('Помилка зміни статусу', 'error');
         }
     }
 
@@ -747,6 +751,56 @@ class MPZApplication {
             </tr>`).join('');
     }
 
+
+    // -----------------------------------------------------------------------
+    // Toast сповіщення
+    // -----------------------------------------------------------------------
+    toast(message, type = 'success') {
+        const container = document.getElementById('toastContainer');
+        if (!container) return;
+        const icons = { success: '✓', error: '✕', warning: '⚠' };
+        const el = document.createElement('div');
+        el.className = `toast ${type !== 'success' ? type : ''}`;
+        el.innerHTML = `<span>${icons[type] || '✓'}</span><span>${message}</span>`;
+        container.appendChild(el);
+        setTimeout(() => el.remove(), 3200);
+    }
+
+    // -----------------------------------------------------------------------
+    // Export modal
+    // -----------------------------------------------------------------------
+    openExportModal() {
+        const el = document.getElementById('exportModal');
+        if (el) el.style.display = 'flex';
+    }
+
+    closeExportModal() {
+        const el = document.getElementById('exportModal');
+        if (el) el.style.display = 'none';
+    }
+
+    // -----------------------------------------------------------------------
+    // QR-код
+    // -----------------------------------------------------------------------
+    async showQR(eventId, eventTitle, attendance) {
+        try {
+            const res = await fetch(`${UI_CONFIG.apiBaseUrl}/events/${eventId}/qr`, {
+                headers: { 'Authorization': `Bearer ${this.token}` }
+            });
+            if (!res.ok) return;
+            const data = await res.json();
+
+            document.getElementById('qrImage').src = data.qr_base64;
+            document.getElementById('qrEventName').textContent = eventTitle;
+            document.getElementById('qrAttendance').textContent = attendance || 0;
+            document.getElementById('qrModal').style.display = 'flex';
+        } catch(err) { console.error('QR error:', err); }
+    }
+
+    closeQRModal() {
+        document.getElementById('qrModal').style.display = 'none';
+    }
+
     filter(status, btn) {
         document.querySelectorAll('.btn-filter').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
@@ -754,6 +808,7 @@ class MPZApplication {
     }
 
     async exportFile(type) {
+        this.toast(`Генерація ${type.toUpperCase()}...`, 'success');
         try {
             const res = await fetch(`${UI_CONFIG.apiBaseUrl}/report/${type}`, {
                 headers: {'Authorization': `Bearer ${this.token}`}
@@ -767,9 +822,12 @@ class MPZApplication {
                 document.body.appendChild(a);
                 a.click();
                 a.remove();
+                this.toast(`Документ ${type.toUpperCase()} завантажено`, 'success');
+            } else {
+                this.toast('Помилка генерації документа', 'error');
             }
         } catch (err) {
-            console.error('Помилка генерації документа:', err);
+            this.toast('Помилка мережі', 'error');
         }
     }
 }

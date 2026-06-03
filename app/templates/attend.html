@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Реєстрація відвідування — ВІТІ МПЗ</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="attend-page">
+        <div class="attend-card" id="attendCard">
+            <div style="font-family:var(--font-mono); font-size:0.65rem; color:var(--text-muted); letter-spacing:2px; margin-bottom:1.5rem; text-transform:uppercase;">
+                ⚡ СИСТЕМА МПЗ // РЕЄСТРАЦІЯ
+            </div>
+
+            <div id="eventInfo">
+                <h2 style="font-family:var(--font-display); font-size:1.2rem; font-weight:700; letter-spacing:1px; color:var(--text-main); margin-bottom:0.5rem;">
+                    {{ event.title }}
+                </h2>
+                <div style="font-family:var(--font-mono); font-size:0.75rem; color:var(--text-muted); margin-bottom:0.3rem;">
+                    📅 {{ event.date }}
+                </div>
+                <div style="font-family:var(--font-mono); font-size:0.75rem; color:var(--text-muted); margin-bottom:1.5rem;">
+                    📍 {{ event.location }}
+                </div>
+
+                <div id="attendStatus" style="margin-bottom:1.5rem;">
+                    <div style="font-family:var(--font-mono); font-size:0.75rem; color:var(--accent);">
+                        ✓ Зараз зареєстровано: <strong id="attendCount">{{ event.attendance }}</strong> осіб
+                    </div>
+                </div>
+
+                <button id="attendBtn" onclick="registerAttendance()" style="
+                    width:100%; padding:14px;
+                    background:var(--accent); color:var(--bg-main);
+                    border:none; border-radius:var(--radius);
+                    font-family:var(--font-display); font-size:1rem;
+                    font-weight:700; letter-spacing:2px;
+                    text-transform:uppercase; cursor:pointer;
+                    transition:all 0.2s;
+                ">
+                    ✓ Підтвердити присутність
+                </button>
+            </div>
+
+            <div id="successMsg" style="display:none; text-align:center; padding:1rem 0;">
+                <div style="font-size:3rem; margin-bottom:1rem;">✅</div>
+                <div style="font-family:var(--font-display); font-size:1.2rem; font-weight:700; color:var(--accent); letter-spacing:1px;">
+                    ПРИСУТНІСТЬ ЗАФІКСОВАНА
+                </div>
+                <div style="font-family:var(--font-mono); font-size:0.75rem; color:var(--text-muted); margin-top:0.5rem;">
+                    Дякуємо за участь у заході
+                </div>
+            </div>
+
+            <div id="errorMsg" style="display:none; text-align:center; padding:1rem 0;">
+                <div style="font-size:3rem; margin-bottom:1rem;">⚠️</div>
+                <div style="font-family:var(--font-display); font-size:1rem; font-weight:700; color:var(--amber); letter-spacing:1px;" id="errorText">
+                    Помилка реєстрації
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function registerAttendance() {
+            const btn = document.getElementById('attendBtn');
+            btn.disabled = true;
+            btn.textContent = 'Реєстрація...';
+
+            try {
+                const res = await fetch(window.location.pathname, { method: 'POST' });
+                const data = await res.json();
+
+                if (res.ok) {
+                    document.getElementById('eventInfo').style.display = 'none';
+                    document.getElementById('successMsg').style.display = 'block';
+                } else {
+                    document.getElementById('eventInfo').style.display = 'none';
+                    document.getElementById('errorText').textContent = data.error || 'Помилка';
+                    document.getElementById('errorMsg').style.display = 'block';
+                }
+            } catch(err) {
+                btn.disabled = false;
+                btn.textContent = '✓ Підтвердити присутність';
+            }
+        }
+    </script>
+</body>
+</html>

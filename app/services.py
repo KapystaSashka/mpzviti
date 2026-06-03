@@ -356,6 +356,54 @@ class UserService:
         db.session.commit()
         return True
 
+
+# ---------------------------------------------------------------------------
+# QRService — генерація QR-кодів для заходів
+# ---------------------------------------------------------------------------
+
+class QRService:
+    @staticmethod
+    def generate_qr(event_id: int, base_url: str = ""):
+        """Генерує QR-код для реєстрації відвідування заходу."""
+        import qrcode
+        import base64
+
+        attend_url = f"{base_url}/attend/{event_id}"
+
+        qr = qrcode.QRCode(
+            version=1,
+            error_correction=qrcode.constants.ERROR_CORRECT_M,
+            box_size=8,
+            border=3,
+        )
+        qr.add_data(attend_url)
+        qr.make(fit=True)
+
+        img = qr.make_image(fill_color="#00e5a0", back_color="#0a1520")
+        stream = io.BytesIO()
+        img.save(stream, format="PNG")
+        stream.seek(0)
+
+        b64 = base64.b64encode(stream.read()).decode()
+        return {
+            "qr_base64": f"data:image/png;base64,{b64}",
+            "attend_url": attend_url,
+            "event_id": event_id,
+        }
+
+    @staticmethod
+    def register_attendance(event_id: int):
+        """Фіксує відвідування — збільшує attendance на 1."""
+        ev = Event.query.get(event_id)
+        if not ev:
+            return None, "Захід не знайдено"
+        if ev.status not in ("Заплановано", "У процесі"):
+            return None, "Реєстрація для цього заходу закрита"
+        ev.attendance = (ev.attendance or 0) + 1
+        db.session.commit()
+        return ev.to_dict(), None
+
+
 class ReportService:
     @staticmethod
     def generate_docx():
