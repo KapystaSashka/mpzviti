@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="pageTitle"></title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+    <!-- Екран авторизації -->
+    <div id="loginScreen" class="auth-overlay">
+        <div class="auth-card">
+            <h2 id="uiLoginHeader"></h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label class="form-label" id="uiLoginUserLabel"></label>
+                    <input type="text" id="username" required class="form-input">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" id="uiLoginPassLabel"></label>
+                    <input type="password" id="password" required class="form-input">
+                </div>
+                <button type="submit" class="btn-submit" id="uiLoginBtn"></button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Головний додаток -->
+    <div id="mainApp" style="display: none;">
+        <nav class="navbar">
+            <div class="brand-block">
+                <div class="logo-badge-img">
+                    <img src="/static/img/coat.png" alt="Герб ВІТІ" class="coat-of-arms"
+                         onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
+                    <div class="logo-badge" style="display:none;">ВІТІ</div>
+                </div>
+                <div class="brand-title">
+                    <h1 id="uiTitleMain"></h1>
+                    <p id="uiTitleSub"></p>
+                </div>
+            </div>
+            <!-- Навігаційні вкладки (тільки для admin) -->
+            <nav class="nav-tabs" id="navTabs" style="display:none;">
+                <button class="nav-tab active" id="tabEvents"    onclick="app.switchTab('events')">📋 Заходи</button>
+                <button class="nav-tab"        id="tabAnalytics" onclick="app.switchTab('analytics')">📊 Аналітика</button>
+                <button class="nav-tab"        id="tabUsers"     onclick="app.switchTab('users')">👥 Профілі</button>
+                <button class="nav-tab"        id="tabAudit"     onclick="app.switchTab('audit')">📒 Журнал</button>
+            </nav>
+
+            <div style="display: flex; gap: 12px; align-items: center;">
+                <!-- Бейдж ролі користувача -->
+                <div class="user-info-block">
+                    <span class="role-badge" id="uiRoleBadge"></span>
+                    <span class="user-name" id="uiUserName"></span>
+                </div>
+                <span class="badge-duty" id="uiBadgeDuty"></span>
+                <button onclick="app.logout()" class="btn-refresh" id="uiBtnLogout" style="background:#ef4444; border:none;"></button>
+            </div>
+        </nav>
+
+        <!-- Сторінка заходів -->
+        <main class="main-container" id="pageEvents">
+
+            <!-- KPI картки -->
+            <section class="analytics-grid">
+                <div class="kpi-card"><span class="kpi-title" id="uiKpiAll"></span><span class="kpi-value" id="kpiTotal">0</span></div>
+                <div class="kpi-card kpi-planned"><span class="kpi-title" id="uiKpiPlanned"></span><span class="kpi-value" id="kpiPlanned">0</span></div>
+                <div class="kpi-card kpi-progress"><span class="kpi-title" id="uiKpiProgress"></span><span class="kpi-value" id="kpiProgress">0</span></div>
+            </section>
+
+            <!-- Форма додавання (ховається для commander/staff) -->
+            <section class="panel" id="eventFormSection">
+                <h2 class="panel-title" id="uiFormHeader"></h2>
+                <form id="eventForm">
+                    <div class="form-group">
+                        <label class="form-label" id="uiLabelTitle"></label>
+                        <input type="text" id="title" required class="form-input">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" id="uiLabelDate"></label>
+                            <input type="date" id="date" required class="form-input">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" id="uiLabelStatus"></label>
+                            <select id="status" class="form-input">
+                                <option value="Заплановано">Заплановано</option>
+                                <option value="У процесі">У процесі</option>
+                                <option value="Завершено">Завершено</option>
+                                <option value="Скасовано">Скасовано</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" id="uiLabelLocation"></label>
+                        <input type="text" id="location" required class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" id="uiLabelResp"></label>
+                        <input type="text" id="responsible" required class="form-input">
+                    </div>
+                    <button type="submit" class="btn-submit" id="uiBtnSubmit"></button>
+                </form>
+            </section>
+
+            <!-- Таблиця заходів -->
+            <section class="panel">
+                <div class="table-header-actions">
+                    <div class="filter-group">
+                        <button class="btn-filter active" onclick="app.filter('Усі', this)">Усі</button>
+                        <button class="btn-filter" onclick="app.filter('Заплановано', this)">Заплановано</button>
+                        <button class="btn-filter" onclick="app.filter('У процесі', this)">В процесі</button>
+                        <button class="btn-filter" onclick="app.filter('Завершено', this)">Виконано</button>
+                    </div>
+                    <div style="display:flex; gap:8px;">
+                        <button onclick="app.exportFile('docx')" class="btn-refresh" id="uiBtnExportDocx" style="background:#14532d;"></button>
+                        <button onclick="app.exportFile('pdf')" class="btn-refresh" id="uiBtnExportPdf" style="background:#7c3aed;">📄 Експорт PDF</button>
+                        <button onclick="app.load()" class="btn-refresh" id="uiBtnRefresh"></button>
+                    </div>
+                </div>
+
+                <div class="table-wrapper">
+                    <table class="events-table">
+                        <thead>
+                            <tr>
+                                <th id="thDate"></th>
+                                <th id="thName"></th>
+                                <th id="thLoc"></th>
+                                <th style="text-align: center;" id="thStatus"></th>
+                                <th style="text-align: center; width:40px;" id="thActions"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="eventsTableBody"></tbody>
+                    </table>
+                </div>
+            </section>
+
+
+
+
+        </main>
+
+        <!-- Сторінка аналітики -->
+        <main class="main-container" id="pageAnalytics" style="display:none;">
+
+            <!-- KPI розширені -->
+            <section class="analytics-grid">
+                <div class="kpi-card"><span class="kpi-title">Усього заходів</span><span class="kpi-value" id="aKpiTotal">0</span></div>
+                <div class="kpi-card kpi-planned"><span class="kpi-title">Заплановано</span><span class="kpi-value" id="aKpiPlanned">0</span></div>
+                <div class="kpi-card kpi-satisfaction"><span class="kpi-title">Задоволеність</span><span class="kpi-value" id="aKpiSat">—</span><span class="kpi-sub">середній бал / 5.0</span></div>
+                <div class="kpi-card kpi-attendance"><span class="kpi-title">Середня явка</span><span class="kpi-value" id="aKpiAtt">—</span><span class="kpi-sub">% від очікуваного</span></div>
+            </section>
+
+            <section class="analytics-full-row" style="display:grid;">
+
+                <!-- Рейтинг категорій -->
+                <div class="panel analytics-panel">
+                    <h2 class="panel-title">📊 Ефективність заходів за категоріями</h2>
+                    <div id="aCategoryRating"></div>
+                </div>
+
+                <!-- Активність підрозділів -->
+                <div class="panel analytics-panel">
+                    <h2 class="panel-title">🏆 Активність підрозділів</h2>
+                    <div id="aUnitActivity"></div>
+                </div>
+
+                <!-- AI рекомендації -->
+                <div class="panel analytics-panel ai-panel">
+                    <div class="ai-panel-header">
+                        <h2 class="panel-title" style="margin:0;">🤖 AI-рекомендації системи</h2>
+                        <button onclick="app.loadAI(true)" class="btn-refresh btn-ai-refresh">Оновити</button>
+                    </div>
+                    <div id="aAiRecommendations"><p class="muted-text">Завантаження...</p></div>
+                </div>
+
+            </section>
+
+        </main>
+
+        <!-- Сторінка профілів -->
+        <main class="main-container page-single" id="pageUsers" style="display:none;">
+            <section class="panel" style="grid-column:1/-1;">
+                <div class="ai-panel-header">
+                    <h2 class="panel-title" style="margin:0;">&#128101; Управління профілями</h2>
+                    <button onclick="app.openUserModal()" class="btn-submit" style="width:auto; padding:8px 20px;">+ Додати профіль</button>
+                </div>
+                <div class="table-wrapper" style="margin-top:1rem;">
+                    <table class="events-table">
+                        <thead><tr>
+                            <th>Логін</th><th>Прізвище та ім'я</th>
+                            <th>Звання / Посада</th><th>Підрозділ</th>
+                            <th>Роль</th><th style="text-align:center;">Стать</th>
+                            <th style="text-align:center;">Дії</th>
+                        </tr></thead>
+                        <tbody id="usersTableBody"></tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+
+        <!-- Сторінка журналу -->
+        <main class="main-container page-single" id="pageAudit" style="display:none;">
+            <section class="panel" style="grid-column:1/-1;">
+                <div class="ai-panel-header">
+                    <h2 class="panel-title" style="margin:0;">&#128221; Журнал дій</h2>
+                    <button onclick="app.loadAudit()" class="btn-refresh">&#128260; Оновити</button>
+                </div>
+                <div class="table-wrapper" style="margin-top:1rem;">
+                    <table class="events-table">
+                        <thead><tr>
+                            <th>Час</th><th>Користувач</th>
+                            <th>Дія</th><th>Деталі</th>
+                        </tr></thead>
+                        <tbody id="auditTableBody"></tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+
+    </div>
+
+
+    <!-- Модальне вікно — профіль користувача -->
+    <div id="userModal" class="modal-overlay" style="display:none;">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 id="modalTitle">Додати профіль</h3>
+                <button onclick="app.closeUserModal()" class="modal-close">✕</button>
+            </div>
+            <div class="modal-body">
+                <div id="modalErrors" class="modal-errors" style="display:none;"></div>
+                <input type="hidden" id="modalUserId">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Прізвище *</label>
+                        <input type="text" id="mLastName" class="form-input" placeholder="Шевченко">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Ім'я *</label>
+                        <input type="text" id="mFirstName" class="form-input" placeholder="Андрій">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Звання</label>
+                        <select id="mRank" class="form-input">
+                            <option value="">— без звання —</option>
+                            <option>рядовий</option>
+                            <option>молодший сержант</option>
+                            <option>сержант</option>
+                            <option>старший сержант</option>
+                            <option>старшина</option>
+                            <option>прапорщик</option>
+                            <option>старший прапорщик</option>
+                            <option>молодший лейтенант</option>
+                            <option>лейтенант</option>
+                            <option>старший лейтенант</option>
+                            <option>капітан</option>
+                            <option>майор</option>
+                            <option>підполковник</option>
+                            <option>полковник</option>
+                            <option>генерал-майор</option>
+                            <option>генерал-лейтенант</option>
+                            <option>генерал-полковник</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Стать *</label>
+                        <select id="mGender" class="form-input">
+                            <option value="M">Чоловіча</option>
+                            <option value="F">Жіноча</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Посада</label>
+                    <input type="text" id="mPosition" class="form-input" placeholder="Офіцер МПЗ">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Підрозділ</label>
+                        <select id="mUnit" class="form-input">
+                            <option value="Керівництво">Керівництво</option>
+                            <option value="1-й факультет">1-й факультет</option>
+                            <option value="2-й факультет">2-й факультет</option>
+                            <option value="3-й факультет">3-й факультет</option>
+                            <option value="Відділ МПЗ">Відділ МПЗ</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Роль *</label>
+                        <select id="mRole" class="form-input">
+                            <option value="staff">Персонал</option>
+                            <option value="psychologist">Психолог</option>
+                            <option value="commander">Командир</option>
+                            <option value="admin">Адміністратор</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row" id="loginFields">
+                    <div class="form-group">
+                        <label class="form-label">Логін * <span style="color:#64748b;font-size:0.7rem;">(латиниця+цифри)</span></label>
+                        <input type="text" id="mUsername" class="form-input" placeholder="ivanov_a">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Пароль * <span style="color:#64748b;font-size:0.7rem;">(мін. 6 символів)</span></label>
+                        <input type="password" id="mPassword" class="form-input" placeholder="••••••••">
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button onclick="app.closeUserModal()" class="btn-refresh">Скасувати</button>
+                    <button onclick="app.saveUser()" class="btn-submit" style="width:auto; padding:10px 30px;">Зберегти</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/js/config.js"></script>
+    <script src="/static/js/app.js"></script>
+</body>
+</html>

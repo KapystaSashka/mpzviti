@@ -1,0 +1,231 @@
+:root {
+    --bg-main: #0b0f19;
+    --bg-card: #151f32;
+    --bg-input: #070a10;
+    --text-main: #f8fafc;
+    --text-muted: #64748b;
+    --accent: #f59e0b;
+    --border: #223147;
+    --radius: 10px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background-color: var(--bg-main); color: var(--text-main); font-family: system-ui, -apple-system, sans-serif; padding-bottom: 40px; }
+
+/* ===================== АВТОРИЗАЦІЯ ===================== */
+.auth-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #070a10; display: flex; justify-content: center; align-items: center; z-index: 9999; }
+.auth-card { background: var(--bg-card); padding: 2.5rem; border-radius: var(--radius); border: 1px solid var(--border); width: 100%; max-width: 400px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
+.auth-card h2 { margin-bottom: 1.5rem; font-size: 1.25rem; text-align: center; color: var(--accent); letter-spacing: 0.5px; }
+
+/* ===================== НАВБАР ===================== */
+.navbar { background-color: var(--bg-card); border-bottom: 1px solid var(--border); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 6px rgba(0,0,0,0.2); }
+.brand-block { display: flex; align-items: center; gap: 12px; }
+.logo-badge { background-color: var(--accent); color: #0b0f19; font-weight: bold; padding: 5px 10px; border-radius: 4px; font-size: 0.85rem; }
+.brand-title h1 { font-size: 1rem; letter-spacing: 0.5px; }
+.brand-title p { font-size: 0.75rem; color: var(--text-muted); }
+.badge-duty { font-size: 0.75rem; background: #223147; padding: 6px 14px; border-radius: 12px; border: 1px solid var(--border); }
+
+/* Блок користувача в навбарі */
+.user-info-block { display: flex; flex-direction: column; align-items: flex-end; gap: 3px; }
+.role-badge { font-size: 0.7rem; font-weight: 700; padding: 3px 10px; border-radius: 10px; border: 1px solid; letter-spacing: 0.3px; text-transform: uppercase; }
+.user-name { font-size: 0.72rem; color: var(--text-muted); }
+
+/* ===================== LAYOUT ===================== */
+.main-container { max-width: 1280px; margin: 2rem auto; padding: 0 1rem; display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
+@media (min-width: 1024px) { .main-container { grid-template-columns: 340px 1fr; } }
+
+/* ===================== KPI КАРТКИ ===================== */
+.analytics-grid { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; }
+.kpi-card { background: var(--bg-card); border: 1px solid var(--border); padding: 1.25rem; border-radius: var(--radius); display: flex; flex-direction: column; border-left: 4px solid var(--accent); }
+.kpi-planned     { border-left-color: #38bdf8; }
+.kpi-progress    { border-left-color: #fbbf24; }
+.kpi-satisfaction{ border-left-color: #34d399; }
+.kpi-attendance  { border-left-color: #a78bfa; }
+.kpi-title { font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 600; }
+.kpi-value { font-size: 1.75rem; font-weight: bold; margin-top: 4px; }
+.kpi-sub { font-size: 0.7rem; color: var(--text-muted); margin-top: 2px; }
+
+/* ===================== ПАНЕЛІ ===================== */
+.panel { background: var(--bg-card); border: 1px solid var(--border); padding: 1.5rem; border-radius: var(--radius); box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+.panel-title { font-size: 1.05rem; margin-bottom: 1.25rem; color: var(--text-main); font-weight: 600; }
+
+/* ===================== АНАЛІТИКА ===================== */
+.analytics-full-row {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+.analytics-panel { display: flex; flex-direction: column; }
+
+/* Рядок рейтингу категорій */
+.rating-row { margin-bottom: 1rem; }
+.rating-meta { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
+.rating-medal { font-size: 1rem; width: 24px; text-align: center; }
+.rating-name { font-size: 0.85rem; font-weight: 600; flex: 1; color: var(--text-main); }
+.rating-score { font-size: 0.8rem; color: var(--accent); font-weight: 700; }
+.rating-bar-track { background: #0d1521; border-radius: 4px; height: 6px; overflow: hidden; margin-bottom: 4px; }
+.rating-bar-fill { height: 100%; border-radius: 4px; transition: width 0.6s ease; }
+.rating-stats { display: flex; justify-content: space-between; font-size: 0.7rem; color: var(--text-muted); }
+
+/* Рядок підрозділу */
+.unit-row { margin-bottom: 0.85rem; }
+.unit-meta { display: flex; justify-content: space-between; margin-bottom: 5px; }
+.unit-name { font-size: 0.85rem; color: var(--text-main); }
+.unit-count { font-size: 0.8rem; color: var(--text-muted); }
+.unit-top .unit-name { color: #38bdf8; font-weight: 700; }
+
+/* ===================== AI РЕКОМЕНДАЦІЇ ===================== */
+.ai-panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; }
+.btn-ai-refresh { font-size: 0.72rem; padding: 5px 12px; }
+
+.ai-rec-card { display: flex; gap: 10px; align-items: flex-start; padding: 10px 14px; border-radius: 8px; margin-bottom: 10px; }
+.ai-rec-icon { font-size: 1rem; margin-top: 1px; flex-shrink: 0; }
+.ai-rec-text { font-size: 0.82rem; line-height: 1.5; }
+.ai-ok { color: #34d399; font-size: 0.85rem; }
+.muted-text { color: var(--text-muted); font-size: 0.82rem; }
+
+/* ===================== ФОРМИ ===================== */
+.form-group { margin-bottom: 1rem; }
+.form-label { display: block; font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.35rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px; }
+.form-input { width: 100%; background: var(--bg-input); border: 1px solid var(--border); border-radius: 5px; padding: 11px; color: #fff; font-size: 0.85rem; transition: border-color 0.2s; }
+.form-input:focus { outline: none; border-color: var(--accent); }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.btn-submit { width: 100%; background: var(--accent); color: #000; font-weight: bold; border: none; padding: 12px; border-radius: 5px; cursor: pointer; font-size: 0.9rem; transition: background 0.2s; }
+.btn-submit:hover { background: #d97706; }
+
+/* ===================== ТАБЛИЦЯ ===================== */
+.table-header-actions { display: flex; justify-content: space-between; margin-bottom: 1.25rem; gap: 10px; flex-wrap: wrap; align-items: center; }
+.filter-group { display: flex; gap: 6px; }
+.btn-filter { background: var(--bg-input); border: 1px solid var(--border); color: var(--text-muted); padding: 6px 14px; border-radius: 5px; cursor: pointer; font-size: 0.75rem; transition: all 0.2s; }
+.btn-filter.active, .btn-filter:hover { background: var(--accent); color: #000; border-color: var(--accent); font-weight: 600; }
+.btn-refresh { background: #223147; border: 1px solid var(--border); color: #fff; padding: 7px 14px; border-radius: 5px; cursor: pointer; font-size: 0.75rem; font-weight: 600; }
+.btn-refresh:hover { background: #2d3f5a; }
+
+.table-wrapper { width: 100%; overflow-x: auto; border: 1px solid var(--border); border-radius: 6px; background: var(--bg-input); }
+.events-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.85rem; }
+.events-table th { background: #0d1521; color: var(--text-muted); padding: 12px 15px; font-size: 0.75rem; text-transform: uppercase; border-bottom: 1px solid var(--border); letter-spacing: 0.5px; }
+.events-table td { padding: 14px 15px; border-bottom: 1px solid #141d2b; vertical-align: middle; }
+.date-col { font-family: monospace; color: var(--text-muted); font-size: 0.8rem; }
+.title-col { font-weight: bold; color: #fff; }
+
+/* Рейтинг в таблиці */
+.sat-stars { font-size: 0.72rem; color: var(--accent); font-weight: 600; margin-top: 3px; display: inline-block; }
+
+/* ===================== СТАТУСИ ===================== */
+.status-badge { display: inline-block; font-size: 0.7rem; padding: 3px 10px; border-radius: 12px; font-weight: bold; text-align: center; }
+.status-badge.planned  { background: rgba(56,189,248,0.1);  color: #38bdf8; }
+.status-badge.progress { background: rgba(251,191,36,0.1);  color: #fbbf24; }
+.status-badge.done     { background: rgba(52,211,153,0.1);  color: #34d399; }
+
+/* ===================== ГЕРБ ===================== */
+.logo-badge-img { display: flex; align-items: center; }
+.coat-of-arms { height: 48px; width: auto; object-fit: contain; filter: drop-shadow(0 2px 6px rgba(0,0,0,0.5)); }
+
+/* ===================== СТАТУС INLINE ===================== */
+.status-inline {
+    background: var(--bg-input);
+    border: 1px solid var(--border);
+    color: var(--text-main);
+    border-radius: 12px;
+    padding: 3px 10px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: center;
+    transition: border-color 0.2s;
+    appearance: none;
+    -webkit-appearance: none;
+}
+.status-inline:focus { outline: none; border-color: var(--accent); }
+.status-inline option { background: var(--bg-card); color: var(--text-main); }
+
+/* ===================== КНОПКА ВИДАЛИТИ ===================== */
+.btn-delete {
+    background: transparent;
+    border: 1px solid rgba(239,68,68,0.3);
+    color: #ef4444;
+    border-radius: 6px;
+    width: 26px;
+    height: 26px;
+    font-size: 0.75rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s, border-color 0.2s;
+    opacity: 0.5;
+}
+.btn-delete:hover { background: rgba(239,68,68,0.15); border-color: #ef4444; opacity: 1; }
+
+/* ===================== СТАТУС СКАСОВАНО ===================== */
+.status-badge.cancelled { background: rgba(239,68,68,0.1); color: #f87171; }
+
+/* ===================== МОДАЛЬНЕ ВІКНО ===================== */
+.modal-overlay {
+    position: fixed; top:0; left:0; width:100%; height:100%;
+    background: rgba(0,0,0,0.7); display:flex; justify-content:center;
+    align-items:center; z-index:9998;
+}
+.modal-card {
+    background: var(--bg-card); border:1px solid var(--border);
+    border-radius: var(--radius); width:100%; max-width:560px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.5); max-height:90vh; overflow-y:auto;
+}
+.modal-header {
+    display:flex; justify-content:space-between; align-items:center;
+    padding:1.25rem 1.5rem; border-bottom:1px solid var(--border);
+}
+.modal-header h3 { font-size:1rem; font-weight:700; color:var(--accent); }
+.modal-close {
+    background:transparent; border:none; color:var(--text-muted);
+    font-size:1.1rem; cursor:pointer; padding:4px 8px;
+    border-radius:4px; transition:background 0.2s;
+}
+.modal-close:hover { background:#223147; color:#fff; }
+.modal-body { padding:1.5rem; }
+.modal-actions { display:flex; gap:10px; justify-content:flex-end; margin-top:1.5rem; }
+.modal-errors {
+    background: rgba(239,68,68,0.08); border:1px solid rgba(239,68,68,0.3);
+    border-radius:6px; padding:10px 14px; margin-bottom:1rem;
+}
+.modal-errors p { color:#fca5a5; font-size:0.82rem; margin-bottom:4px; }
+.modal-errors p:last-child { margin-bottom:0; }
+
+/* ===================== НАВІГАЦІЙНІ ВКЛАДКИ ===================== */
+.nav-tabs {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+}
+.nav-tab {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    padding: 7px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    font-weight: 600;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+.nav-tab:hover {
+    background: #223147;
+    color: var(--text-main);
+}
+.nav-tab.active {
+    background: var(--accent);
+    color: #000;
+    border-color: var(--accent);
+}
+
+/* Сторінка з одним блоком */
+.page-single {
+    max-width: 1280px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+}
