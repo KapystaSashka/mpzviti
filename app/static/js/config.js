@@ -3,7 +3,7 @@
  * v2.0 — оновлено тексти для нових блоків.
  */
 const UI_CONFIG = {
-    apiBaseUrl: 'http://127.0.0.1:5000',
+    apiBaseUrl: '',
 
     localization: {
         pageTitle:      "ВІТІ — Морально-психологічне забезпечення",
