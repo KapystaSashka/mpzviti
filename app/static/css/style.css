@@ -859,3 +859,110 @@ body::before {
 ::-webkit-scrollbar-track { background: var(--bg-main); }
 ::-webkit-scrollbar-thumb { background: var(--border-accent); border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--accent-dim); }
+
+/* ===================== MOBILE ADAPTIVE ===================== */
+@media (max-width: 768px) {
+    body { padding-bottom: 20px; }
+
+    .navbar {
+        padding: 0 1rem;
+        height: auto;
+        min-height: 58px;
+        flex-wrap: wrap;
+        gap: 6px;
+        padding-top: 8px;
+        padding-bottom: 8px;
+    }
+
+    .brand-title h1 { font-size: 0.75rem; }
+    .brand-title p  { display: none; }
+    .badge-duty     { display: none; }
+
+    .nav-tabs {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        gap: 2px;
+        padding-bottom: 4px;
+    }
+
+    .nav-tab {
+        font-size: 0.72rem;
+        padding: 5px 10px;
+        white-space: nowrap;
+    }
+
+    .main-container {
+        grid-template-columns: 1fr;
+        margin: 0.8rem auto;
+        padding: 0 0.7rem;
+        gap: 0.8rem;
+    }
+
+    .panel { padding: 1rem; }
+
+    .analytics-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.6rem;
+    }
+
+    .kpi-card { padding: 0.8rem 1rem; }
+    .kpi-value { font-size: 1.5rem; }
+
+    .analytics-full-row {
+        grid-template-columns: 1fr;
+    }
+
+    .table-header-actions {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+    }
+
+    .filter-group {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: 4px;
+    }
+
+    .table-wrapper { overflow-x: auto; }
+
+    .events-table { font-size: 0.75rem; min-width: 600px; }
+    .events-table th, .events-table td { padding: 8px 10px; }
+
+    .form-row { grid-template-columns: 1fr; }
+
+    .modal-card {
+        margin: 0.5rem;
+        max-height: 95vh;
+    }
+
+    .export-options { grid-template-columns: 1fr 1fr; gap: 8px; }
+
+    .qr-card { padding: 1.2rem; max-width: 95vw !important; }
+    .qr-card img { width: 160px !important; height: 160px !important; }
+
+    /* Attend page mobile */
+    .attend-page { padding: 0.8rem; align-items: flex-start; padding-top: 2rem; }
+    .attend-card { padding: 1.4rem; }
+
+    #toastContainer {
+        bottom: 12px;
+        right: 12px;
+        left: 12px;
+    }
+    .toast { min-width: auto; }
+}
+
+@media (max-width: 480px) {
+    .analytics-grid { grid-template-columns: 1fr 1fr; }
+    .kpi-value { font-size: 1.3rem; }
+
+    .nav-tab { font-size: 0.68rem; padding: 4px 8px; }
+
+    .brand-block { gap: 8px; }
+    .coat-of-arms { height: 32px; }
+
+    .attend-card { padding: 1.2rem; }
+    .form-input { font-size: 16px; } /* prevents iOS zoom on focus */
+}
