@@ -133,27 +133,39 @@ class AuditLog(db.Model):
 # ---------------------------------------------------------------------------
 
 def seed_db():
-    """Заповнює БД початковими даними якщо вона порожня."""
+    """Заповнює БД початковими даними якщо їх ще немає."""
 
-    if User.query.first():
-        return  # вже заповнено
+    # --- Юзери ---
+    if not User.query.filter_by(username="admin_viti").first():
+        users = [
+            User(username="admin_viti",  password="p@ssword123", role="admin",        first_name="Іван",    last_name="Адміністратор", rank="",                  position="Адміністратор системи",    gender="M", unit="Керівництво"),
+            User(username="mpz_officer", password="knavy2026",   role="psychologist", first_name="Олег",    last_name="Ковальчук",     rank="капітан",           position="Офіцер МПЗ",               gender="M", unit="Відділ МПЗ"),
+            User(username="commander_1", password="cmd_pass_1",  role="commander",    first_name="Андрій",  last_name="Шевченко",      rank="підполковник",      position="Командир факультету",      gender="M", unit="1-й факультет"),
+            User(username="staff_user",  password="staff2026",   role="staff",        first_name="Дмитро",  last_name="Бойко",         rank="старший лейтенант", position="Черговий офіцер",          gender="M", unit="2-й факультет"),
+        ]
+        db.session.add_all(users)
 
-    users = [
-        User(username="admin_viti",  password="p@ssword123", role="admin",        first_name="Іван",    last_name="Адміністратор", rank="",                      position="Адміністратор системи",    gender="M", unit="Керівництво"),
-        User(username="mpz_officer", password="knavy2026",   role="psychologist", first_name="Олег",    last_name="Ковальчук",     rank="капітан",               position="Офіцер МПЗ",               gender="M", unit="Відділ МПЗ"),
-        User(username="commander_1", password="cmd_pass_1",  role="commander",    first_name="Андрій",  last_name="Шевченко",      rank="підполковник",          position="Командир факультету",      gender="M", unit="1-й факультет"),
-        User(username="staff_user",  password="staff2026",   role="staff",        first_name="Дмитро",  last_name="Бойко",         rank="старший лейтенант",     position="Черговий офіцер",          gender="M", unit="2-й факультет"),
-        User(username="Test1",       password="pass1",        role="psychologist", first_name="Тест",    last_name="Перший",        rank="",                      position="Демонстраційний",          gender="M", unit="Відділ МПЗ"),
-        User(username="Test2",       password="pass2",        role="commander",    first_name="Тест",    last_name="Другий",        rank="",                      position="Демонстраційний",          gender="M", unit="1-й факультет"),
-    ]
-    db.session.add_all(users)
+    if not User.query.filter_by(username="Test1").first():
+        test_users = [
+            User(username="Test1", password="pass1", role="psychologist", first_name="Тест", last_name="Перший", rank="", position="Демонстраційний", gender="M", unit="Відділ МПЗ"),
+            User(username="Test2", password="pass2", role="commander",    first_name="Тест", last_name="Другий", rank="", position="Демонстраційний", gender="M", unit="1-й факультет"),
+        ]
+        db.session.add_all(test_users)
 
-    events = [
-        Event(title="Концерт до Дня Героїв Крут",             date="2026-05-25", location="Актовий зал інституту",  responsible="майор Петренко В.М.",        status="Завершено",   category="cultural",      unit_id=None, attendance=87,  capacity=100, satisfaction_score=4.6),
-        Event(title="Психологічний тренінг: Стресостійкість та профілактика бойового стресу", date="2026-05-28", location="Клас 312", responsible="капітан Ковальчук О.І.", status="Завершено", category="psychological", unit_id=2, attendance=24, capacity=30, satisfaction_score=4.8),
-        Event(title="Військово-історичний лекторій для курсантів", date="2026-06-05", location="Лекційний зал №2",   responsible="підполковник Шевченко А.П.", status="Заплановано", category="educational",   unit_id=1, attendance=0,   capacity=60,  satisfaction_score=0),
-        Event(title="Спортивне змагання: крос-кантрі",         date="2026-05-20", location="Спортивний майданчик",  responsible="майор Петренко В.М.",        status="Завершено",   category="sport",         unit_id=None, attendance=112, capacity=120, satisfaction_score=4.9),
-        Event(title="Зустріч з ветеранами АТО/ООС",           date="2026-05-15", location="Актовий зал інституту",  responsible="підполковник Шевченко А.П.", status="Завершено",   category="patriotic",     unit_id=3,    attendance=45,  capacity=80,  satisfaction_score=4.3),
-    ]
-    db.session.add_all(events)
+    # --- Заходи ---
+    if not Event.query.first():
+        events = [
+            Event(title="Концерт до Дня Героїв Крут",                                        date="2026-05-25", location="Актовий зал інституту", responsible="майор Петренко В.М.",        status="Завершено",    category="cultural",       unit_id=None, attendance=87,  capacity=100, satisfaction_score=4.6),
+            Event(title="Психологічний тренінг: Стресостійкість та профілактика бойового стресу", date="2026-05-28", location="Клас 312",           responsible="капітан Ковальчук О.І.",    status="Завершено",    category="psychological",  unit_id=2,    attendance=24,  capacity=30,  satisfaction_score=4.8),
+            Event(title="Військово-історичний лекторій для курсантів",                        date="2026-06-10", location="Лекційний зал №2",      responsible="підполковник Шевченко А.П.", status="Заплановано",  category="educational",    unit_id=1,    attendance=0,   capacity=60,  satisfaction_score=0.0),
+            Event(title="Спортивне змагання: крос-кантрі",                                    date="2026-05-20", location="Спортивний майданчик",   responsible="майор Петренко В.М.",        status="Завершено",    category="sport",          unit_id=None, attendance=112, capacity=120, satisfaction_score=4.9),
+            Event(title="Зустріч з ветеранами АТО/ООС",                                       date="2026-05-15", location="Актовий зал інституту", responsible="підполковник Шевченко А.П.", status="Завершено",    category="patriotic",      unit_id=3,    attendance=45,  capacity=80,  satisfaction_score=4.3),
+            Event(title="Тренінг з психологічної реабілітації",                               date="2026-06-12", location="Клас 215",              responsible="капітан Ковальчук О.І.",    status="У процесі",    category="psychological",  unit_id=None, attendance=18,  capacity=25,  satisfaction_score=0.0),
+            Event(title="День фізичної підготовки — естафета",                                date="2026-06-15", location="Спортивний майданчик",   responsible="майор Петренко В.М.",        status="Заплановано",  category="sport",          unit_id=2,    attendance=0,   capacity=50,  satisfaction_score=0.0),
+            Event(title="Перегляд документального фільму «Кіборги»",                          date="2026-06-08", location="Актовий зал інституту", responsible="підполковник Шевченко А.П.", status="Завершено",    category="patriotic",      unit_id=None, attendance=95,  capacity=100, satisfaction_score=4.7),
+            Event(title="Майстер-клас: Малювання як арт-терапія",                             date="2026-06-18", location="Клас 101",              responsible="капітан Ковальчук О.І.",    status="Заплановано",  category="cultural",       unit_id=1,    attendance=0,   capacity=20,  satisfaction_score=0.0),
+            Event(title="Лекція: Кібербезпека та OSINT для офіцерів",                         date="2026-06-20", location="Лекційний зал №1",      responsible="підполковник Шевченко А.П.", status="Заплановано",  category="educational",    unit_id=None, attendance=0,   capacity=80,  satisfaction_score=0.0),
+        ]
+        db.session.add_all(events)
+
     db.session.commit()
