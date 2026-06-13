@@ -229,7 +229,7 @@ def register_attendance(event_id):
     if not full_name:
         return jsonify({"error": "ПІБ обов'язкове"}), 400
 
-    ev = Event.query.get(event_id)
+    ev = db.session.get(Event, event_id)
     if not ev:
         return jsonify({"error": "Захід не знайдено"}), 404
     if ev.status not in ("Заплановано", "У процесі"):
