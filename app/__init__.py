@@ -9,7 +9,6 @@ def create_app():
     app = Flask(__name__)
     CORS(app)
 
-    # SQLite — файл mpz.db в корені проєкту
     base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
     app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{os.path.join(base_dir, 'mpz.db')}"
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
