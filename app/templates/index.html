@@ -137,7 +137,7 @@
             </section>
 
 
-
+            
 
         </main>
 
@@ -342,12 +342,22 @@
 
     <!-- QR modal -->
     <div id="qrModal" class="modal-overlay" style="display:none;">
-        <div class="qr-card">
+        <div class="qr-card" style="max-width:500px;width:100%;">
             <h3>QR-КОД ЗАХОДУ</h3>
             <img id="qrImage" src="" alt="QR" width="200" height="200">
             <div class="qr-event-name" id="qrEventName"></div>
-            <div class="qr-attendance">👥 Зареєстровано: <span id="qrAttendance">0</span></div>
-            <button onclick="app.closeQRModal()" class="export-close" style="margin-top:1rem;">✕ Закрити</button>
+            <div class="qr-attendance" style="margin-bottom:1rem;">👥 Зареєстровано: <span id="qrAttendance">0</span></div>
+
+            <!-- Список присутніх -->
+            <div style="border-top:1px solid var(--border-accent);padding-top:0.8rem;margin-top:0.3rem;">
+                <div style="font-family:var(--font-mono);font-size:0.7rem;color:var(--text-muted);letter-spacing:1px;margin-bottom:6px;text-transform:uppercase;">Список присутніх</div>
+                <div id="qrAttendanceList" style="max-height:200px;overflow-y:auto;"></div>
+            </div>
+
+            <div style="display:flex;gap:8px;margin-top:1rem;">
+                <button onclick="app.loadAttendanceList(document.getElementById('qrModal').dataset.eventId)" class="btn-refresh" style="flex:1;font-size:0.7rem;">↻ Оновити</button>
+                <button onclick="app.closeQRModal()" class="export-close" style="flex:1;">✕ Закрити</button>
+            </div>
         </div>
     </div>
 

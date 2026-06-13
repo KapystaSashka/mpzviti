@@ -220,11 +220,51 @@ def attend_page(event_id):
 
 @api_bp.route('/attend/<int:event_id>', methods=['POST'])
 def register_attendance(event_id):
-    """Фіксує відвідування через QR."""
-    result, error = QRService.register_attendance(event_id)
-    if error:
-        return jsonify({"error": error}), 400
-    return jsonify({"ok": True, "attendance": result["attendance"]}), 200
+    """Фіксує відвідування через QR з даними особи."""
+    data = request.get_json() or {}
+    full_name  = (data.get('full_name') or '').strip()
+    rank       = (data.get('rank') or '').strip()
+    group_name = (data.get('group_name') or '').strip()
+
+    if not full_name:
+        return jsonify({"error": "ПІБ обов'язкове"}), 400
+
+    ev = Event.query.get(event_id)
+    if not ev:
+        return jsonify({"error": "Захід не знайдено"}), 404
+    if ev.status not in ("Заплановано", "У процесі"):
+        return jsonify({"error": "Реєстрація закрита"}), 400
+
+    # Перевірка дубліката — та сама людина на той самий захід
+    existing = Attendance.query.filter_by(
+        event_id=event_id,
+        full_name=full_name
+    ).first()
+    if existing:
+        return jsonify({"error": "Вже зареєстровано", "duplicate": True}), 409
+
+    # Зберігаємо запис
+    record = Attendance(
+        event_id=event_id,
+        full_name=full_name,
+        rank=rank,
+        group_name=group_name
+    )
+    db.session.add(record)
+
+    # Оновлюємо лічильник
+    ev.attendance = (ev.attendance or 0) + 1
+    db.session.commit()
+
+    return jsonify({"ok": True, "attendance": ev.attendance}), 200
+
+
+@api_bp.route('/attend/<int:event_id>/list', methods=['GET'])
+@permission_required('events:read')
+def get_attendance_list(event_id):
+    """Список зареєстрованих на захід (для адміна/психолога)."""
+    records = Attendance.query.filter_by(event_id=event_id)                              .order_by(Attendance.created_at.asc()).all()
+    return jsonify([r.to_dict() for r in records]), 200
 
 
 

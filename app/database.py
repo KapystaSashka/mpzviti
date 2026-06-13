@@ -117,6 +117,28 @@ class AuditLog(db.Model):
         }
 
 
+class Attendance(db.Model):
+    """Реєстрація відвідуваності через QR-код."""
+    __tablename__ = "attendance"
+
+    id         = db.Column(db.Integer, primary_key=True)
+    event_id   = db.Column(db.Integer, db.ForeignKey("events.id"), nullable=False)
+    full_name  = db.Column(db.String(128), nullable=False)
+    rank       = db.Column(db.String(64),  nullable=False, default="")
+    group_name = db.Column(db.String(64),  nullable=False, default="")
+    created_at = db.Column(db.DateTime,    default=datetime.datetime.utcnow)
+
+    def to_dict(self):
+        return {
+            "id":         self.id,
+            "event_id":   self.event_id,
+            "full_name":  self.full_name,
+            "rank":       self.rank,
+            "group_name": self.group_name,
+            "created_at": self.created_at.strftime("%d.%m.%Y %H:%M"),
+        }
+
+
 def seed_db():
     """Заповнює БД початковими даними якщо їх немає."""
 

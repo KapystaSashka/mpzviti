@@ -794,7 +794,43 @@ class MPZApplication {
             document.getElementById('qrEventName').textContent = eventTitle;
             document.getElementById('qrAttendance').textContent = attendance || 0;
             document.getElementById('qrModal').style.display = 'flex';
+
+            // Store current event id for list loading
+            document.getElementById('qrModal').dataset.eventId = eventId;
+
+            // Load attendance list
+            this.loadAttendanceList(eventId);
         } catch(err) { console.error('QR error:', err); }
+    }
+
+    async loadAttendanceList(eventId) {
+        try {
+            const res = await fetch(`${UI_CONFIG.apiBaseUrl}/attend/${eventId}/list`, {
+                headers: { 'Authorization': `Bearer ${this.token}` }
+            });
+            if (!res.ok) return;
+            const list = await res.json();
+
+            const container = document.getElementById('qrAttendanceList');
+            if (!container) return;
+
+            if (list.length === 0) {
+                container.innerHTML = '<div style="color:var(--text-muted);font-family:var(--font-mono);font-size:0.72rem;text-align:center;padding:8px;">Ще нікого не зареєстровано</div>';
+                return;
+            }
+
+            container.innerHTML = list.map((r, i) => `
+                <div style="display:flex;gap:8px;align-items:center;padding:6px 0;border-bottom:1px solid var(--border);font-family:var(--font-mono);font-size:0.72rem;">
+                    <span style="color:var(--text-muted);min-width:20px;">${i+1}.</span>
+                    <span style="color:var(--text-main);flex:1;">${r.rank ? r.rank + ' ' : ''}${r.full_name}</span>
+                    <span style="color:var(--text-muted);">${r.group_name || ''}</span>
+                    <span style="color:var(--text-muted);font-size:0.65rem;">${r.created_at}</span>
+                </div>
+            `).join('');
+
+            // Update counter
+            document.getElementById('qrAttendance').textContent = list.length;
+        } catch(err) { console.error('Attendance list error:', err); }
     }
 
     closeQRModal() {
