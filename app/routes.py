@@ -4,6 +4,7 @@ from functools import wraps
 from app.services import (EventService, AuthService, AnalyticsService,
                           AIService, ReportService, AuditService, UserService, QRService, has_permission)
 from app.report_structure import ERROR_MESSAGES
+from app.database import db, Event, Attendance
 
 api_bp = Blueprint('api', __name__)
 
