@@ -89,10 +89,10 @@ class MPZApplication {
         }
         if (userName) userName.textContent = this.name;
 
-        // Оновлюємо бейдж "Черговий АСУ" — показуємо роль
+        // Бейдж чергового — приховуємо якщо роль вже показана
         const dutyBadge = document.getElementById('uiBadgeDuty');
         if (dutyBadge) {
-            dutyBadge.textContent = roleLabels[role] || 'Користувач';
+            dutyBadge.style.display = 'none';
         }
 
         // Аналітика — видима для всіх крім staff

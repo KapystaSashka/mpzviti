@@ -9,6 +9,7 @@ ROLES = {
     "psychologist": ["events:read", "events:write", "analytics:read", "ai:read"],
     "commander":    ["events:read", "analytics:read", "ai:read"],
     "staff":        ["events:read"],
+    "test":          ["events:read"],
 }
 
 # Мокована таблиця користувачів з ролями
@@ -17,6 +18,7 @@ MOCK_USERS = {
     "mpz_officer":  {"password": "knavy2026",    "role": "psychologist", "name": "капітан Ковальчук О.І.",     "unit": "Відділ МПЗ"},
     "commander_1":  {"password": "cmd_pass_1",   "role": "commander",    "name": "підполковник Шевченко А.П.", "unit": "1-й факультет"},
     "staff_user":   {"password": "staff2026",    "role": "staff",        "name": "старший лейтенант Бойко Д.", "unit": "2-й факультет"},
+    "test_user":    dict(password="pass1", role="test", name="?", unit="?"),
 }
 
 # Підрозділи

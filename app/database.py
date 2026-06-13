@@ -143,6 +143,8 @@ def seed_db():
         User(username="mpz_officer", password="knavy2026",   role="psychologist", first_name="Олег",    last_name="Ковальчук",     rank="капітан",               position="Офіцер МПЗ",               gender="M", unit="Відділ МПЗ"),
         User(username="commander_1", password="cmd_pass_1",  role="commander",    first_name="Андрій",  last_name="Шевченко",      rank="підполковник",          position="Командир факультету",      gender="M", unit="1-й факультет"),
         User(username="staff_user",  password="staff2026",   role="staff",        first_name="Дмитро",  last_name="Бойко",         rank="старший лейтенант",     position="Черговий офіцер",          gender="M", unit="2-й факультет"),
+        User(username="Test1",       password="pass1",        role="psychologist", first_name="Тест",    last_name="Перший",        rank="",                      position="Демонстраційний",          gender="M", unit="Відділ МПЗ"),
+        User(username="Test2",       password="pass2",        role="commander",    first_name="Тест",    last_name="Другий",        rank="",                      position="Демонстраційний",          gender="M", unit="1-й факультет"),
     ]
     db.session.add_all(users)
 

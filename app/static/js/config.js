@@ -3,7 +3,7 @@
  * v2.0 — оновлено тексти для нових блоків.
  */
 const UI_CONFIG = {
-    apiBaseUrl: '',
+    apiBaseUrl: 'http://127.0.0.1:5000',
 
     localization: {
         pageTitle:      "ВІТІ — Морально-психологічне забезпечення",
@@ -17,13 +17,13 @@ const UI_CONFIG = {
         loginBtn:       "Авторизуватися",
         loginError:     "Помилка доступу: облікові дані не підтверджено ситуаційним центром.",
 
-        formHeader:     "➕ Нове розпорядження / захід",
+        formHeader:     "➕ Новий захід МПЗ",
         labelTitle:     "Назва заходу",
         labelDate:      "Дата проведення",
         labelStatus:    "Поточний стан",
         labelLocation:  "Місце проведення (Локація)",
         labelResp:      "Відповідальний офіцер",
-        btnSubmit:      "Внести до бойового плану",
+        btnSubmit:      "Внести захід",
 
         btnRefresh:     "🔄 Оновити дані",
         btnExportDocx:  "📝 Експорт Word",
